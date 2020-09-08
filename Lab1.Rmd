@@ -7,22 +7,69 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## problem 1
+Compute the sum of the sequence 100 to 1000, going up by a constant value of 100 (100,200,300,400,500,600,700,800,900,1000).
+```{r}
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+sum(seq(100,1000,100))
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+```
+## problem 2
+Compute the sum of these numbers (1,3,2,4,3,5,4,3,4,5,6,5,6,7,6,5,6,5,4,3,4,5)
+```{r}
 
-```{r cars}
-summary(cars)
+sum(c(1,3,2,4,3,5,4,3,4,5,6,5,6,7,6,5,6,5,4,3,4,5))
+
+```
+## problem 3
+Write a custom sequence generator function using a for loop that generates a sequence from a starting integer value to an ending integer value in steps of 1. Demonstrate that it can produce the sequence 1 to 10.
+```{r}
+
+SeqGenerator <- function(start,end){
+  for(i in start:end)
+    print(i)
+}
+SeqGenerator(start=1,end=10)
+```
+## problem 4
+Write a custom function to implement the following general equation to find the sum of any constant series:
+X1+X2+…+Xn=(((Xn−X1)/c)+1)((X1+Xn)/2)
+
+Demonstrate that your function correctly produces the sum for the series below:
+
+seq(10,100,10)
+#>  [1]  10  20  30  40  50  60  70  80  90 100
+
+```{r}
+
+Sum_a <- function(x1,xn,step){
+Sum_b <- (((xn-x1)/step)+1)*((x1+xn)/2)
+return(Sum_b)
+}
+Sum_a(x1=10,xn=100,step=10)
+```
+## problem 5
+Write a custom function that generates a constant series between any start and end values, with any constant, and finds the sum. Have your function output both the sequence and the sum. For this problem, feel free to use the existing seq() and sum() functions in your custom function. Demonstrate the function correctly prints out the above sequence (10 to 100 in steps of 10), and its sum.
+
+```{r}
+
+SumSeq <- function(start,end,step){
+  sequence <- seq(start,end,step)
+  sum <- sum(sequence)
+  output <- list(TheSequence=sequence,
+               TheSum=sum)
+  return(output)
+}
+
+SumSeq(10,100,10)
+```
+## problem 6
+Use the sum() and the length() functions to calculate the mean (average) of the numbers x = c(1,2,3,4,5).
+
+```{r}
+
+x<-c(1,2,3,4,5)
+sum(x)/length(x)
+
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
