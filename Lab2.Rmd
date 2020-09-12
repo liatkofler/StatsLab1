@@ -115,3 +115,4 @@ ggplot(HLEmean, aes(x=year,y=HLEmean2))+
 ```
 
 Confidence: I tried to do question 1, 2, and 6 without looking at the solutions, although I did need to refer back to the lecture video. For question 1, I'm not sure why I get 'N/A' in my output. I need to continue to troubleshoot this. For question 2, I was unable to figure out how to do the median or mode, and I believed I did the variance/SD correctly until I looked at your solution video, and noticed that you used 'function()' which I did not. When you instruct to 'write an R function', does it mean to use 'function()'? I suppose I just wrote a formula which is probably incorrect. I needed a lot more help with the rest of the problems.
+1 = 80, 2 = 50, 3 = 0, 4 = 0, 5 = 0, 6 = 80
