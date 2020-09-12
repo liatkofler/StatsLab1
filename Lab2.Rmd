@@ -1,0 +1,117 @@
+---
+title: "Lab2"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+##Problem 1
+
+```{r}
+x = c(12,8,5,7,23,56,14,9,33,28)
+mean(x)
+min(x)
+max(x)
+TestNum<-min(x):max(x)
+SumDev<-c()
+for (i in TestNum) {
+  SumDev[i]<-sum(x-i)
+}
+SumDev
+plot(abs(SumDev))
+```
+
+
+
+##Problem 2
+
+```{r}
+# Variance R formula
+var(x)
+
+#Variance one line formula
+var2<-(sum((x-mean(x))^2))/(length(x)-1)
+var2
+
+#variance multi line formula
+Dev<-x-mean(x)
+Dev2<-Dev^2
+sum2<-sum(Dev^2)
+Length<-length(x)
+Var3<-sum2/(Length-1)
+Var3
+
+#SD R formula
+sd(x)
+
+#SD formula
+SD2<-sqrt((sum((x-mean(x))^2))/(length(x)-1))
+SD2
+```
+
+##Problem 3
+
+```{r}
+library(dplyr)
+library(ggplot2)
+sections<-c("morning","afternoon","evening")
+grades<-c(85,90,93)
+data<-data.frame(sections,grades)
+data
+
+ggplot(data, aes(x=sections,y=grades))+
+  geom_bar(stat="identity")
+```
+##Problem 4
+
+```{r}
+instructors<-c("one","one","one","two","two","two")
+sections<-c("morning","afternoon","evening","morning","afternoon","evening")
+grades<-c(75,78,80,88,76,63)
+data<-data.frame(instructors,sections,grades)
+data
+
+ggplot(data, aes(x=sections,y=grades,group=instructors,fill=instructors))+
+  geom_bar(stat="identity", position="dodge")
+```
+##Problem 5
+
+```{r}
+
+WHR<-read.table("open_data/WHR2018.csv",
+                             sep = ",",
+                             header = TRUE )
+WHR
+
+HLEmean<-WHR %>%
+  filter(year>=2010,
+         year<=2015)%>%
+  group_by(year) %>%
+  summarize(HLEmean2=mean(Healthy.life.expectancy.at.birth, na.rm=TRUE))
+
+knitr::kable(HLEmean)
+ggplot(HLEmean, aes(x=year,y=HLEmean2))+
+  geom_bar(stat="identity")
+```
+
+##Problem 6
+
+```{r}
+
+HLEmean<-WHR %>%
+  filter(year>=2010,
+         year<=2015)%>%
+  group_by(year) %>%
+  summarize(HLEmean2=mean(Healthy.life.expectancy.at.birth, na.rm=TRUE),
+            HLEsd= sd(Healthy.life.expectancy.at.birth, na.rm=TRUE))
+
+knitr::kable(HLEmean)
+ggplot(HLEmean, aes(x=year,y=HLEmean2))+
+  geom_bar(stat="identity")+
+  geom_errorbar(aes(ymin = HLEmean2 - HLEsd,
+                    ymax = HLEmean2 + HLEsd),
+                width = .25)
+```
+
+Confidence: I tried to do question 1, 2, and 6 without looking at the solutions, although I did need to refer back to the lecture video. For question 1, I'm not sure why I get 'N/A' in my output. I need to continue to troubleshoot this. For question 2, I was unable to figure out how to do the median or mode, and I believed I did the variance/SD correctly until I looked at your solution video, and noticed that you used 'function()' which I did not. When you instruct to 'write an R function', does it mean to use 'function()'? I suppose I just wrote a formula which is probably incorrect. I needed a lot more help with the rest of the problems.
