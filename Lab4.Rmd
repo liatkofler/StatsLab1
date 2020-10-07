@@ -1,0 +1,94 @@
+---
+title: "Lab4"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+##Question 1
+
+```{r}
+paragraph <- "Beyoncé Giselle Knowles-Carter is an American singer and actress. Born and raised in Houston, Texas, Beyoncé performed in various singing and dancing competitions as a child. She rose to fame in the late 1990s as the lead singer of Destiny's Child, one of the best-selling girl groups of all time. During Destiny's Child's hiatus, Beyoncé made her theatrical film debut with a role in the US box-office number-one Austin Powers in Goldmember (2002) and began her solo music career. She became the first music act to debut at number one with their first six solo studio albums on the Billboard 200."
+my_letters <- unlist(strsplit(paragraph, split=""))
+lower_case <- tolower(my_letters)
+
+letters_counts <- table(lower_case)
+letters_counts <- data.frame(letters_counts)
+library(dplyr)
+final <- letters_counts %>%
+  filter(lower_case %in% letters == TRUE)
+letters_total <- sum(final$Freq)
+final <- final %>%
+  mutate(probabilities=Freq/letters_total)
+
+knitr::kable(final)
+
+
+```
+
+##Question 2
+
+```{r}
+
+my_letters <- sample(final$lower_case,50*5,replace=TRUE, prob=final$probabilities)
+
+# turn the vector into a matrix with 5 columns
+my_strings <- matrix(my_letters, ncol=5)
+
+# each row is a word, need to collapse the column to create a string
+paste(my_strings[1,], collapse="")
+#> [1] "ludwp"
+
+# loop to collapse all of the rows into words
+random_strings <-c()
+for(i in 1:dim(my_strings)[1]){
+  random_strings[i] <- paste(my_strings[i,], collapse="")
+}
+
+random_strings
+
+```
+
+
+##Question 3
+
+```{r}
+
+step <- c(0)
+for(i in 1:10000){
+  coin_flip<-sample(c(1,-1),1)
+  step[i+1] <- step[i]+coin_flip
+}
+plot(step[1:1000])
+
+```
+
+##Question 4
+
+```{r}
+plot(step)
+max(step)
+min(step)
+
+```
+
+##Question 5
+
+```{r}
+
+logical_step <- sign(step)
+sequence <- c()
+counter <- 0
+for(i in 1:length(logical_step)){
+  if(logical_step[i] == 0){
+    sequence <- c(sequence,counter)
+    counter <- 0
+  } else {counter <- counter+logical_step[i]}
+  
+}
+
+max(sequence)
+```
+
+#confidence: very low. I am able to follow your logic and it makes sense as you are providing the steps, however I am unable to think of the logic myself or try to figure out what the next step would be, unfortunately.
