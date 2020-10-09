@@ -1,0 +1,67 @@
+---
+title: "Lab5"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+##Question 1
+
+```{r}
+
+sample<-rnorm(1000000,0,1)
+selection<-sample[sample>2.5]
+length(selection)/1000000
+
+```
+
+
+##Question 2
+
+```{r}
+
+pnorm(130,100,10,lower.tail=FALSE)
+10000*pnorm(130,100,10,lower.tail=FALSE)
+
+sample<-rnorm(10000,100,10)
+sample2<-replicate(10000,sample)
+length(sample2[sample2>130])/10000
+
+
+```
+
+
+##Question 3
+
+```{r}
+
+sample<-replicate(10000,mean(rnorm(25,10,20)))
+length(sample[sample>=12])/10000
+
+
+```
+
+
+##Question 4
+
+```{r}
+
+sample<-replicate(10000,mean(rnorm(100,10,20)))
+length(sample[sample>=12])/10000
+
+```
+The probability is smaller than in question 3. When you increase the number of samples (from 25 to 100), you have a higher chance of obtaining the 'true' mean. Since a mean of 12 is larger than the true mean of 10, you have a lower probability of obtaining this mean when you use a higher number of samples. 
+
+##Question 5
+
+```{r}
+
+sample<-replicate(10000,sd(rnorm(25,10,20)))
+length(sample[sample<=15])/10000
+
+```
+
+Confidence ~30-50
+
+
