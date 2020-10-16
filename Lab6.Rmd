@@ -1,0 +1,78 @@
+---
+title: "Lab6"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+##Question 1
+
+```{r}
+
+GroupOne<-c(3,4,5,6,7)
+GroupTwo<-c(5,3,2,4,6)
+
+random<-function(A,B,resamples=100){
+  ##Calculate actual means
+  GroupA_Mean<-mean(A)
+  GroupB_Mean<-mean(B)
+  MeanDifference<-GroupA_Mean-GroupB_Mean
+  
+  ##Conduct randomization
+  
+  AllMeans<-c(A,B)
+  
+  PossibleDifferences <- c()
+  for(i in 1:resamples){
+    resample <- sample(AllMeans)
+    newA_mean <- mean(resample[1:length(A)])
+    newB_mean <- mean(resample[(length(A)+1):length(AllMeans)])
+    PossibleDifferences[i] <- newA_mean-newB_mean
+  }
+  
+  #plot
+  ThePlot<-ggplot2::qplot(PossibleDifferences)+
+    ggplot2::geom_histogram(color="orange")+
+    ggplot2::geom_vline(xintercept=MeanDifference, color ="red")+
+    ggplot2::theme_classic()
+  
+  p_value<-length(PossibleDifferences[PossibleDifferences>=MeanDifference])/resamples
+  
+  
+  TestOutput<-list(A_Mean=GroupA_Mean,
+                   B_Mean=GroupB_Mean,
+                   difference=MeanDifference,
+                   Randomization=PossibleDifferences,
+                   plot=ThePlot,
+                   p_value=p_value)
+  return(TestOutput)
+  
+}
+random(A=GroupOne,B=GroupTwo,resamples=1000)
+
+
+
+```
+
+
+```{r}
+
+the_data <- read.csv("open_data/SchroederEpley2015data.csv", header = TRUE)
+the_data
+library(dplyr)
+
+Group_0<-the_data %>%
+  filter(ï..CONDITION==0) %>%
+  select(Intellect_Rating) 
+
+Group_0<-Group_0$Intellect_Rating
+
+Group_1<-the_data %>%
+  filter(ï..CONDITION==1) %>%
+  select(Intellect_Rating)
+
+Group_1<-Group_1$Intellect_Rating
+
+random(A=Group_0,B=Group_1,resamples=1000)
+```
