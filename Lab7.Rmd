@@ -1,0 +1,54 @@
+---
+title: "Lab7"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+##Question 1
+
+```{r}
+test_results<-binom.test(x = 30,
+           n = 50,
+           p = .5,
+           alternative='greater')
+
+test_results$p.value
+
+
+```
+Since the p-value is .101, we can conclude that there is a 10.1% chance that this test-score can be produced by the test-taker randomly guessing on each question.
+
+##Question 2
+
+```{r}
+binom.test(x = 385,
+           n = 700,
+           p = .5,
+           alternative='greater')
+
+
+```
+700 questions is sufficient for ~.5 person per 100 to obtain a score of over 55% by chance.
+
+##Question 3
+
+```{r}
+rbinom(n=rep(1,10),size=1,prob=c(.5,.5,.5,.5,.5,.25,.25,.25,.25,.25))
+test<-replicate(10000,rbinom(n=rep(1,10),size=1,prob=c(.5,.5,.5,.5,.5,.25,.25,.25,.25,.25)))
+
+scores<-colSums(test)/10
+
+library(ggplot2)
+qplot(scores)+
+  geom_histogram()
+
+length(scores[scores>=.75])/10000
+
+```
+Question 3b asks "... to receive 75% or greater on this test", however the solution video shows only greater than. I am showing equal to or greater than in my solution, in line with the question rather than the solution video.
+
+Confidence: ~.80 for questions 1 & 2, 0 for question 3.
+           
+           
