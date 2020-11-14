@@ -1,0 +1,75 @@
+---
+title: "Lab9"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Original Results
+
+"16 of 21 infants (76.2%) chose the new block (block C; Fig. 1)—a percentage significantly different from chance, according to a two-tailed binomial test, p = .026, 95% exact confidence interval (CI) = [52.83%, 91.78%], relative risk ratio = 1.52. A chi-square test of independence indicated no significant effect of age or gender on infants’ choices, χ2(19,N = 21) = 18.24, p = .506, and χ2(1, N = 21) = 0.15, p = .696, respectively."
+
+##Replication of results
+```{r}
+
+data <- read.csv(file="Lab9Data.csv")
+
+##Restrict data to experiment 1a only
+library(dplyr)
+exp1data<-data%>%
+  filter(ExperimentNumber==1)
+
+##two-tailed binomial test (testing infants' choice of novel toy)
+##c=novel toy
+
+sum_C<-sum(exp1data$Infant.Chose.C)
+NumInfants_C<-length(exp1data$Infant.Chose.C)
+
+(binomial_p<-pbinom(q=NumInfants_C-sum_C, size=NumInfants_C, prob=.5, lower.tail = TRUE)*2)
+
+##Chi-square for gender
+
+library(tidyr)
+
+gender_table<-exp1data %>%
+  group_by(Gender, Infant.Chose.C) %>%
+  summarize(counts = n()) %>%
+  pivot_wider(names_from=c(Gender),values_from=counts)
+
+gender_table<-gender_table[,2:3]
+
+(gender_chisq<-chisq.test(gender_table))
+(uncorrected_chisq<-sum((gender_chisq$observed
+                        -gender_chisq$expected)^2
+                       /gender_chisq$expected))
+
+gender_chisq_unc<-pchisq(uncorrected_chisq,1,lower.tail = FALSE)
+
+##Chi-square for age
+
+age_table<-exp1data %>%
+  group_by(AgeMonths, Infant.Chose.C) %>%
+  summarize(counts = n()) %>%
+  pivot_wider(names_from=c(AgeMonths),values_from=counts)
+
+age_table[is.na(age_table)]<-0
+age_table<-as.matrix(age_table[,2:21])
+
+(age_chisq<-chisq.test(age_table))
+
+```
+
+#Original Report
+
+However, in the critical test trial that followed, 16 of 21 infants (76.2%) chose the new block (block C; Fig. 1)—a percentage
+significantly different from chance, according to a two-tailed binomial test, p = .026, 95% exact confidence interval (CI) = [52.83%, 91.78%], relative risk ratio = 1.52. A chi-square test of independence indicated no significant effect of age or gender on infants’ choices, χ2(19, N = 21) = 18.24, p = .506, and χ2(1, N = 21) = 0.15, p = .696, respectively.
+
+#Reproduced Report
+
+However, in the critical test trial that followed, `r sum_C` of `r NumInfants_C` infants (`r round((sum_C/NumInfants_C)*100,digits=1)`%) chose the new block (block C; Fig. 1)—a percentage significantly different from chance, according to a two-tailed binomial test, p = `r round(binomial_p,digits=3)`, 95% exact confidence interval (CI) = [52.83%, 91.78%], relative risk ratio = 1.52. A chi-square test of independence indicated no significant effect of age or gender on infants’ choices, $\chi^2$(`r round(age_chisq$parameter,digits=3)`, N=  `r round (sum(age_chisq$observed),digits=3)`) = `r round (age_chisq$statistic,digits=2)`, p = `r round(age_chisq$p.value,digits=3)`, and $\chi^2$ (1, N = 21) = `r round (uncorrected_chisq,digits=2)`, p = `r round(gender_chisq_unc,digits=3)`, respectively.
+
+#Conclusions
+
+Our results match the results reported by the authors. There is only a slight difference in the p-value of the binomial test (reported by the authors as .026, compared to our obtained value of .027). This may be a rounding/reporting error on the authors end, especially if rounding was performed manually, and overall does not affect the conclusions drawn from this statistical test. 
