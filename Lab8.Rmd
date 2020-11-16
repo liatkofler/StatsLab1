@@ -1,0 +1,80 @@
+---
+title: "Lab8"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Question 1
+```{r}
+
+zscorefunction<-function(raw,mu,sdev){
+  zscore<-(raw-mu)/sdev
+  return(zscore)
+}
+
+##demonstrate function works properly:
+
+random_data<-c(2,5,10,3,6)
+zscorefunction(random_data,4,2)
+
+##convert raw scores to z scores:
+
+zscorefunctionb<-function(raw,mu=NULL,sdev=NULL){
+  if(is.null(mu)==TRUE) mu<-mean(raw)
+  if(is.null(sdev)==TRUE) sdev<-sd(raw)
+  zscore<-(raw-mu)/sdev
+  return(zscore)
+  }
+zscorefunctionb(random_data,4,2)
+zscorefunctionb(random_data)
+  
+
+```
+
+#Question 2
+
+```{r}
+
+ztest<-function(sample_mean,sample_size,mu,sigma,two.tailed=TRUE){
+  distribution_mean<-mu
+  distribution_sd<-sigma/sqrt(sample_size)
+  
+p_value<-pnorm(sample_mean,distribution_mean,distribution_sd, lower.tail = FALSE)
+
+if(two.tailed==TRUE) p_value<-p_value*2
+return(p_value)
+}
+
+ztest(sample_mean=50,sample_size=25,mu=40,sigma=7,two.tailed=TRUE)
+
+
+
+##Observed value larger than sample mean
+ztest<-function(sample_mean,sample_size,mu,sigma,two.tailed=TRUE){
+  
+    distribution_mean<-mu
+    distribution_sd<-sigma/sqrt(sample_size)
+    
+    abs_diff<-abs(sample_mean-mu)
+  
+    p_value<-pnorm((mu+abs_diff),sample_mean,distribution_mean,distribution_sd, lower.tail = FALSE)
+
+  if(two.tailed==TRUE) p_value<-p_value*2
+  return(p_value)
+    
+}
+
+ztest(sample_mean=37,sample_size=5,mu=40,sigma=7,two.tailed=FALSE)
+
+
+
+```
+
+For the first function: 
+We found that the probability of obtaining a sample mean of 50 for a sample with 25 scores, taken from a distribution with mean 40 and standard deviation 7 is 9.14e-13. This is a very small probability; there is a very small chance of observing a mean of 50 for a sample of this size. 
+
+
+There is an issue with my second function in problem 2 that I am struggling with troubleshooting - I get an incorrect, negative value (obviously, this value cannot logically be negative). The function seems to run smoothly, which makes it difficult to pinpoint where the issue lies. I will continue to try to figure it out and re-watch the solution video, but I wanted to note this in case you are able to see the source of the issue. 
