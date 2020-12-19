@@ -1,0 +1,87 @@
+---
+title: "Lab10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+#Question 1
+```{r}
+
+library(papaja)
+library(dplyr)
+library(ggplot2)
+
+alldata<-read.csv(file="stroop_stand2.csv",fileEncoding="UTF-8-BOM")
+
+#Stroop effect for standing condition
+
+(stand_stroop<-t.test(alldata$incongruent_stand,alldata$congruent_stand,paired = TRUE))
+
+#Stroop effect for sitting condition
+
+(sit_stroop<-t.test(alldata$incongruent_sit,alldata$congruent_sit,paired = TRUE))
+
+```
+
+Our reproduction of the analysis found that the Stroop effects in both the sitting condition, `r papaja::apa_print(sit_stroop)$full_result`, and the standing condition, `r papaja::apa_print(stand_stroop)$full_result` were highly reliable.
+
+
+```{r}
+stand_stroop_scores<-alldata$incongruent_stand-alldata$congruent_stand
+sit_stroop_scores<-alldata$incongruent_sit-alldata$congruent_sit
+stroop_diff<-sit_stroop_scores-stand_stroop_scores
+(interaction_results<-t.test(stroop_diff))
+(paired_results<-t.test(stand_stroop_scores,sit_stroop_scores,paired = TRUE))
+
+```
+
+#Question 2
+```{r}
+
+library(tidyr)
+
+#convert to long data format
+stroop_df<-alldata%>%
+  pivot_longer(cols=1:4, 
+               names_to=c("Congruency", "Posture"),
+               names_sep="_",
+               values_to="RTs")
+
+#get the means
+overall_means<-stroop_df%>%
+  group_by(Posture,Congruency)%>%
+  summarise(meanRT=mean(RTs),
+            SEMRT=(sd(RTs)/sqrt(length(RTs))))
+
+#generate the plot
+
+ggplot(overall_means, aes(x=Posture, y=meanRT, group=Congruency, fill=Congruency))+
+  geom_bar(stat="identity",position = "dodge")+
+  theme_classic(base_size=12)+
+  ylab("Mean Reaction Time (ms)")+
+  geom_errorbar(aes(ymin=meanRT-SEMRT, ymax=meanRT+SEMRT), position=position_dodge(width=0.9),width=.2,color="black")+
+  coord_cartesian(ylim = c(500,1000))
+
+```
+
+#Question 3
+```{r}
+
+effect_size<-seq(0,1.5,.1)
+prop_significant<-c()
+for(i in 1: length(effect_size)){
+  sim_ps<-replicate(1000, t.test(replicate(50, rnorm(1, effect_size[i], 1)), mu=0)$p.value)
+  prop_significant[i]<-length(sim_ps[sim_ps<.05])/1000
+}
+
+plot_df<-data.frame(effect_size,prop_significant)
+ggplot(plot_df, aes(x=effect_size, y=prop_significant))+
+  geom_line()+geom_point()+
+  scale_x_continuous(breaks=seq(0,1.5,.1))+
+  scale_y_continuous(breaks=seq(0,1,.1))+
+  ylab("proportion Significant")
+```
