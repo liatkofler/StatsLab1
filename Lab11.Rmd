@@ -1,0 +1,45 @@
+---
+title: "Lab11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Question 1a
+```{r}
+
+X <- c(1,4,3,2,5,4,3,6,7,8)
+Y <- c(1,3,6,7,8,2,8,7,6,9)
+
+(corr<-cor.test(X,Y))
+```
+The correlation was $r$ = `r round(corr$estimate,digits=2)`, $p$ = `r round(corr$p.value,digits=3)`
+
+Papaja magic: The correlation was `r papaja::apa_print(corr)$full_result`
+
+##Question 1b
+
+```{r}
+
+sim_rs <- replicate(1000,cor(sample(X),sample(Y)))
+hist(sim_rs)
+
+length(sim_rs[sim_rs>=corr$estimate])/1000
+
+
+```
+##Question 2a
+
+```{r}
+
+(sum(sort(X)*sort(Y, decreasing=TRUE)))
+
+```
+##Question 2b
+
+```{r}
+
+(sum(sort(X)*sort(Y)))
+
+```
